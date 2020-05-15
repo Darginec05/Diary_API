@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, isValidObjectId } from 'mongoose';
 import { IPost } from './post.model';
 
 @Injectable()
@@ -20,8 +20,24 @@ export class PostService {
   async getPosts(): Promise<IPost[]> {
     try {
       const posts: IPost[] = await this.PostModel.find().exec();
-      console.log({ posts })
       return posts;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async getPostByID(postId: string): Promise<IPost> {
+    try {
+      //[TODO] - add better validation
+      if (!isValidObjectId(postId)) {
+        throw new HttpException('NOT_VALID_OBJECT_ID', 400);
+      }
+      
+      const post = await this.PostModel.findById(postId).exec();
+      if (!post) {
+        throw new HttpException('POST_NOT_FOUND', 404);
+      }
+      return post;
     } catch (error) {
       return error;
     }

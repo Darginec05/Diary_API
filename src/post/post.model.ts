@@ -1,6 +1,6 @@
-import * as mongoose from 'mongoose';
+import { Schema, Document } from 'mongoose';
 
-export const PostSchema = new mongoose.Schema({
+export const PostSchema = new Schema({
   title: {
     type: String,
     required: false,
@@ -17,7 +17,7 @@ export const PostSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
-export interface IPost extends mongoose.Document {
+export interface IPost extends Document {
   id: string;
   title?: string;
   text: string;
