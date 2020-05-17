@@ -17,7 +17,8 @@ export class PostService {
     }
   }
 
-  async getPosts(): Promise<IPost[]> {
+  async getPosts(req: any): Promise<IPost[]> {
+    console.log(req.user);
     try {
       const posts: IPost[] = await this.PostModel.find().exec();
       return posts;

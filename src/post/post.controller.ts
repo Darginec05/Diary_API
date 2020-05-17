@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { PostService } from './post.service';
 import { IPost } from './post.model';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('post')
 export class PostController {
@@ -13,8 +14,9 @@ export class PostController {
   }
 
   @Get('all')
-  async getPosts(): Promise<IPost[]> {
-    const posts = await this.postService.getPosts();
+  @UseGuards(AuthGuard())
+  async getPosts(@Req() req: any): Promise<IPost[]> {
+    const posts = await this.postService.getPosts(req);
     return posts;
   }
 
