@@ -21,8 +21,16 @@ export const UserSchema = new Schema(
         required: false,
       },
     },
+    ownerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    likes: {
+      type: Number,
+      default: 0
+    }
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export interface UserProfile {
@@ -34,4 +42,6 @@ export interface IUser extends Document {
   email: string;
   password: string;
   profile?: UserProfile;
+  ownerId: string;
+  likes: number;
 }

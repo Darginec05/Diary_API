@@ -14,8 +14,13 @@ export const PostSchema = new Schema({
     type: String,
     default: null,
     required: false
+  },
+  isAnonym: {
+    type: Boolean,
+    required: false,
+    default: false,
   }
-}, { timestamps: true })
+}, { timestamps: true, strict: true })
 
 export interface IPost extends Document {
   id: string;

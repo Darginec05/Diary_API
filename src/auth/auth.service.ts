@@ -36,9 +36,7 @@ export class AuthService {
 
   async signIn(userData: any): Promise<IAuthResponse> {
     try {
-      const user = await this.UserModel.findOne({
-        username: userData.username,
-      });
+      const user = await this.UserModel.findOne({ username: userData.username });
       if (!user) {
         throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
       }

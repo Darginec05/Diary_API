@@ -6,13 +6,13 @@ import { IUser } from 'src/user/user.model';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
+  @Post('signup')
   async signUp(@Body() userData: IUser) {
     const payload = await this.authService.signUp(userData);
     return payload;
   }
 
-  @Post('signIn')
+  @Post('signin')
   async signIn(@Body() userData: any) {
     await this.authService.signIn(userData);
   }

@@ -1,7 +1,7 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
-import { IPost } from './post.model';
+import { IPost } from './post.schema';
 
 @Injectable()
 export class PostService {
@@ -17,10 +17,15 @@ export class PostService {
     }
   }
 
-  async getPosts(req: any): Promise<IPost[]> {
-    console.log(req.user);
+  async getPosts(req: any, limit = 15): Promise<IPost[]> {
     try {
-      const posts: IPost[] = await this.PostModel.find().exec();
+      // const MAX_LIMIT_POSTS_UNAUTH = 2;
+
+      // if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
+      //   throw new UnauthorizedException();
+      // }
+
+      const posts: IPost[] = await this.PostModel.find().limit(limit).exec();
       return posts;
     } catch (error) {
       return error;
