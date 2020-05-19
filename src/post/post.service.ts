@@ -7,23 +7,23 @@ import { IPost } from './post.schema';
 export class PostService {
   constructor(@InjectModel('Post') private readonly PostModel: Model<IPost>) {}
 
-  async addPost(body: IPost): Promise<string> {
+  async addPost(body: IPost): Promise<any> {
     try {
       const post = new this.PostModel(body);
       const result = await post.save();
-      return result.id;
+      return result;
     } catch (error) {
       return error;
     }
   }
 
-  async getPosts(req: any, limit = 15): Promise<IPost[]> {
+  async getPosts(req: any, limit: number): Promise<IPost[]> {
     try {
-      // const MAX_LIMIT_POSTS_UNAUTH = 2;
+      const MAX_LIMIT_POSTS_UNAUTH = 2;
 
-      // if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
-      //   throw new UnauthorizedException();
-      // }
+      if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
+        throw new UnauthorizedException();
+      }
 
       const posts: IPost[] = await this.PostModel.find().limit(limit).exec();
       return posts;

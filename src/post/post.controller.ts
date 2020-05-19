@@ -10,15 +10,15 @@ export class PostController {
 
   @Post('add')
   @UseGuards(AuthGuard('jwt'))
-  async addPost(@Body() body: IPost): Promise<string> {
-    const resultId: string = await this.postService.addPost(body);
-    return resultId;
+  async addPost(@Body() body: IPost): Promise<any> {
+    const result: string = await this.postService.addPost(body);
+    return result;
   }
 
   @Get('list')
   @UseGuards(new OptionalAuthGuard())
-  async getPosts(@Req() req: any, @Query() query: any): Promise<IPost[]> {
-    const posts = await this.postService.getPosts(req, +query.limit);
+  async getPosts(@Req() req: any, @Query('limit') limit = 15): Promise<IPost[]> {
+    const posts = await this.postService.getPosts(req, +limit);
     return posts;
   }
 
