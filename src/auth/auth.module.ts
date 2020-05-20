@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from 'src/user/user.model';
+import { UserSchema } from 'src/user/user.schema';
 
 @Module({
   imports: [

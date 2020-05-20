@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { IUser } from 'src/user/user.model';
+import { IUser } from 'src/user/user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +14,7 @@ export class AuthController {
 
   @Post('signin')
   async signIn(@Body() userData: any) {
-    await this.authService.signIn(userData);
+    const payload = await this.authService.signIn(userData);
+    return payload;
   }
 }

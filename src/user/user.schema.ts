@@ -1,4 +1,5 @@
 import { Schema, Document } from 'mongoose';
+import { IPost } from 'src/post/post.schema';
 
 export const UserSchema = new Schema(
   {
@@ -21,14 +22,7 @@ export const UserSchema = new Schema(
         required: false,
       },
     },
-    ownerId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    likes: {
-      type: Number,
-      default: 0
-    }
+    posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
   },
   { timestamps: true, strict: true },
 );
@@ -44,4 +38,5 @@ export interface IUser extends Document {
   profile?: UserProfile;
   ownerId: string;
   likes: number;
+  posts: IPost[];
 }

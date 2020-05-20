@@ -7,10 +7,11 @@ import { IPost } from './post.schema';
 export class PostService {
   constructor(@InjectModel('Post') private readonly PostModel: Model<IPost>) {}
 
-  async addPost(body: IPost): Promise<any> {
+  async addPost(body: any): Promise<IPost> {
     try {
-      const post = new this.PostModel(body);
-      const result = await post.save();
+      const { userId, post } = body;
+      const newPost: IPost = new this.PostModel({ ...post, postedBy: userId });
+      const result = await newPost.save();
       return result;
     } catch (error) {
       return error;
@@ -19,7 +20,7 @@ export class PostService {
 
   async getPosts(req: any, limit: number): Promise<IPost[]> {
     try {
-      const MAX_LIMIT_POSTS_UNAUTH = 2;
+      const MAX_LIMIT_POSTS_UNAUTH = 15;
 
       if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
         throw new UnauthorizedException();
@@ -35,7 +36,7 @@ export class PostService {
   async getPostByID(postId: string): Promise<IPost> {
     try {
       //[TODO] - add better validation
-      if (!isValidObjectId(postId)) {
+      if (!postId || !isValidObjectId(postId)) {
         throw new HttpException('NOT_VALID_OBJECT_ID', 400);
       }
       

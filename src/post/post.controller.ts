@@ -10,8 +10,8 @@ export class PostController {
 
   @Post('add')
   @UseGuards(AuthGuard('jwt'))
-  async addPost(@Body() body: IPost): Promise<any> {
-    const result: string = await this.postService.addPost(body);
+  async addPost(@Body() body: any): Promise<IPost> {
+    const result: IPost = await this.postService.addPost(body);
     return result;
   }
 
@@ -21,13 +21,6 @@ export class PostController {
     const posts = await this.postService.getPosts(req, +limit);
     return posts;
   }
-
-  // @Get('user/list')
-  // @UseGuards(AuthGuard('jwt'))
-  // async getUserPosts(@Req() req: any): Promise<IPost[]> {
-  //   const posts = await this.postService.getPosts(req); []
-  //   return posts;
-  // }
 
   @Get(':postId')
   @UseGuards(AuthGuard('jwt'))
