@@ -1,4 +1,4 @@
-import { Schema, Document } from 'mongoose';
+import { Schema, Document, } from 'mongoose';
 
 export const PostSchema = new Schema(
   {

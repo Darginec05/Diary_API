@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { ConfigService } from './config/config.service';
 import { AuthModule } from './auth/auth.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
       inject: [ConfigService],
     }),
     AuthModule,
+    DatabaseModule,
   ],
 })
 export class AppModule {}

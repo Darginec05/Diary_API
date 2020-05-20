@@ -9,9 +9,9 @@ export class ConfigService {
   }
 
   get(key: string): string {
-    if(!process.env[key]) {
-      throw new Error(`MISSED key: ${key} in ${this.envPath}`)
-    }
+    // if(!process.env[key]) {
+    //   throw new Error(`MISSED key: ${key} in ${this.envPath}`)
+    // }
     return process.env[key] || '';
   }
 }
