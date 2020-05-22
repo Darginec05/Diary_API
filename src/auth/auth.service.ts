@@ -5,31 +5,31 @@ import {
   ConflictException,
   HttpException,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { IUser } from 'src/user/user.schema';
 import { IAuthResponse } from 'src/user/user.interface';
+import { User } from 'src/user/user.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private readonly UserModel: Model<IUser>,
+    @Inject('USER_REPOSITORY') private readonly userRepository: typeof User,
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(userData: IUser): Promise<any> {
+  async signUp(userData: any): Promise<any> {
     try {
-      const user = await this.UserModel.findOne({ username: userData.username });
-      if(user) {
+      const user = await this.userRepository.findOne({ where: { username: userData.username } });
+      console.log(user);
+      if (user) {
         throw new HttpException('USER IS ALREADY EXISTS', HttpStatus.CONFLICT);
       }
-      const newUser = new this.UserModel(userData);
-      await newUser.save();
+      const someData = await this.userRepository.create({ ...userData, user_id: uuidv4() });
       const payload = { username: userData.username, id: userData.id };
       const token = this.jwtService.sign(payload);
-      return { token, username: newUser.username };
+      return { token, username: userData.username };
     } catch (error) {
       return error;
     }
@@ -37,7 +37,7 @@ export class AuthService {
 
   async signIn(userData: any): Promise<IAuthResponse> {
     try {
-      const user = await this.UserModel.findOne({ username: userData.username });
+      const user = await this.userRepository.findOne({ where: { username: userData.username } });
       if (!user) {
         throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
@@ -48,7 +48,7 @@ export class AuthService {
 
       const payload = { username: userData.username, id: userData.id };
       const token = this.jwtService.sign(payload);
-      return { token, username: user.username };
+      return { token, username: userData.username };
     } catch (error) {
       return error;
     }

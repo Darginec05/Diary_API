@@ -3,7 +3,7 @@ import { User } from 'src/user/user.entity';
 
 @Table
 export class Post extends Model<Post> {
-  @Column({ type: DataType.UUIDV4, allowNull: false, primaryKey: true })
+  @Column({ type: DataType.UUID, allowNull: false, primaryKey: true })
   post_id!: string;
 
   @Column({ type: DataType.STRING, allowNull: true })
@@ -21,10 +21,12 @@ export class Post extends Model<Post> {
   isAnonymPost!: boolean;
 
   @Default(0)
-  @Column(DataType.NUMBER)
+  @Column(DataType.INTEGER)
   likes!: number;
 
   @ForeignKey(() => User)
+  user_fk!: string;
+
   @BelongsTo(() => User, 'user_id')
   user!: User
 }

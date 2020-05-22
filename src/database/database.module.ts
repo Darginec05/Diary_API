@@ -8,17 +8,24 @@ import { User } from 'src/user/user.entity';
 const databaseProviders = [
   {
     provide: 'SEQUELIZE',
-    useFactory: async (configService: ConfigService) => {
+    useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: 'postgres',
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
-        port: +!process.env.DB_PORT,
+        port: +!process.env.DB_PORT || 5432,
+        ssl: true,
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false
+          }
+        }
       });
       sequelize.addModels([Post, User]);
-      await sequelize.sync();
+      await sequelize.sync({ force: true });
       return sequelize;
     },
   },

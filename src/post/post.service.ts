@@ -1,46 +1,51 @@
-import { Injectable, HttpException, UnauthorizedException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, isValidObjectId } from 'mongoose';
-import { IPost } from './post.schema';
+import {
+  Injectable,
+  HttpException,
+  UnauthorizedException,
+  Inject,
+} from '@nestjs/common';
+import { Post } from './post.entity';
 
 @Injectable()
 export class PostService {
-  constructor(@InjectModel('Post') private readonly PostModel: Model<IPost>) {}
+  constructor(
+    @Inject('POST_REPOSITORY') private readonly postRepository: typeof Post,
+  ) {}
 
-  async addPost(body: any): Promise<IPost> {
+  async addPost(body: any): Promise<any> {
     try {
       const { userId, post } = body;
-      const newPost: IPost = new this.PostModel({ ...post, postedBy: userId });
-      const result = await newPost.save();
-      return result;
+      const newPost = await this.postRepository.create({});
+      // const newPost: IPost = new this.PostModel({ ...post, postedBy: userId });
+      // const result = await newPost.save();
+      // return result;
     } catch (error) {
       return error;
     }
   }
 
-  async getPosts(req: any, limit: number): Promise<IPost[]> {
-    try {
-      const MAX_LIMIT_POSTS_UNAUTH = 15;
+  async getPosts(req: any, limit: number): Promise<Post[]> {
+    const posts = this.postRepository.findAll<Post>();
+    return posts;
 
-      if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
-        throw new UnauthorizedException();
-      }
+    // try {
+    //   const MAX_LIMIT_POSTS_UNAUTH = 15;
 
-      const posts: IPost[] = await this.PostModel.find().limit(limit).exec();
-      return posts;
-    } catch (error) {
-      return error;
-    }
+    //   if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
+    //     throw new UnauthorizedException();
+    //   }
+
+    //   const posts: IPost[] = await this.PostModel.find().limit(limit).exec();
+    //   return posts;
+    // } catch (error) {
+    //   return error;
+    // }
   }
 
-  async getPostByID(postId: string): Promise<IPost> {
+  async getPostByID(post_id: string): Promise<Post> {
     try {
-      //[TODO] - add better validation
-      if (!postId || !isValidObjectId(postId)) {
-        throw new HttpException('NOT_VALID_OBJECT_ID', 400);
-      }
-      
-      const post = await this.PostModel.findById(postId).exec();
+      //[TODO] - add validation for uuid
+      const post = await this.postRepository.findOne({ where: { post_id } });
       if (!post) {
         throw new HttpException('POST_NOT_FOUND', 404);
       }
