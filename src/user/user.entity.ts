@@ -6,7 +6,7 @@ import {
   BeforeInsert
 } from 'typeorm'
 
-import { PostEntity } from 'src/post/post.entity';
+import { PostEntity } from '../post/post.entity';
 
 import * as bcrypt from 'bcryptjs'
 

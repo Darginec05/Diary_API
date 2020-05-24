@@ -5,7 +5,7 @@ import {
   ManyToOne
 } from 'typeorm'
 
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('post')
 export class PostEntity {

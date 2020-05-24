@@ -23,7 +23,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         ssl: true,
         rejectUnauthorized: false,
       },
-      entities: ['src/**/*.entity.ts', 'dist/**/*.entity.js'],
+      entities: [process.env.NODE_ENV === 'production' ? 'dist/**/*.entity.js' : 'src/**/*.entity.ts'],
     }),
     ConfigModule,
     UserModule,

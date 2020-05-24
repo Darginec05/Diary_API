@@ -1,11 +1,11 @@
 import { Controller, Post, Body, Get, Param, UseGuards, Req, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuard } from '@nestjs/passport';
-import { OptionalAuthGuard } from 'src/guards/optional.auth.guard';
+import { OptionalAuthGuard } from '../guards/optional.auth.guard';
 import { CreatePostDTO } from './dto/create.post.dto';
 import { PostResponse, Post as IPost } from './post.interface';
 import { GetPostDTO } from './dto/get.post.dto';
-import { AuthUserRequest } from 'src/auth/auth.interface';
+import { AuthUserRequest } from '../auth/auth.interface';
 
 @Controller('post')
 export class PostController {
