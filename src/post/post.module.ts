@@ -1,22 +1,14 @@
 import { Module } from '@nestjs/common';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
-import { AuthModule } from 'src/auth/auth.module';
-import { DatabaseModule } from 'src/database/database.module';
-import { Post } from './post.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostEntity } from './post.entity';
+import { UserEntity } from 'src/user/user.entity';
 
 @Module({
-  imports: [
-    AuthModule,
-    DatabaseModule,
-  ],
+  imports: [TypeOrmModule.forFeature([PostEntity, UserEntity])],
   controllers: [PostController],
-  providers: [
-    PostService,
-    {
-      provide: 'POST_REPOSITORY',
-      useValue: Post,
-    },
-  ],
+  exports: [PostService],
+  providers: [PostService],
 })
 export class PostModule {}

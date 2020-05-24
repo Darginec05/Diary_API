@@ -4,12 +4,9 @@ import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-import { DatabaseModule } from 'src/database/database.module';
-import { User } from 'src/user/user.entity';
 
 @Module({
   imports: [
-    DatabaseModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET_KEY,
       signOptions: {
@@ -21,12 +18,8 @@ import { User } from 'src/user/user.entity';
   providers: [
     AuthService,
     JwtStrategy,
-    {
-      provide: 'USER_REPOSITORY',
-      useValue: User,
-    },
   ],
   controllers: [AuthController],
-  exports: [PassportModule, JwtStrategy],
+  exports: [PassportModule, JwtStrategy, AuthService],
 })
 export class AuthModule {}

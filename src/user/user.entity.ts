@@ -1,20 +1,26 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-import { Post } from 'src/post/post.entity';
+import { 
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany
+} from 'typeorm'
 
-@Table
-export class User extends Model<User> {
-  @Column({ type: DataType.UUID, allowNull: false, primaryKey: true })
-  user_id!: string;
+import { PostEntity } from 'src/post/post.entity';
 
-  @Column({ type: DataType.STRING, allowNull: false })
-  username!: string;
-  
-  @Column({ type: DataType.STRING, allowNull: false })
-  email!: string;
+@Entity('user')
+export class UserEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string
 
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: 'text', unique: true })
+  username!: string
+
+  @Column({ type: 'text', unique: true })
+  email!: string
+
+  @Column('text')
   password!: string;
 
-  @HasMany(() => Post, { constraints: false })
-  posts!: Post[]
-};
+  @OneToMany(type => PostEntity, post => post.author, { cascade: true })
+  posts!: PostEntity[]
+}

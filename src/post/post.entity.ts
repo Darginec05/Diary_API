@@ -1,32 +1,29 @@
-import { Table, Column, Model, DataType, Default, BelongsTo, ForeignKey } from 'sequelize-typescript';
-import { User } from 'src/user/user.entity';
+import { 
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne
+} from 'typeorm'
 
-@Table
-export class Post extends Model<Post> {
-  @Column({ type: DataType.UUID, allowNull: false, primaryKey: true })
-  post_id!: string;
+import { UserEntity } from 'src/user/user.entity';
 
-  @Column({ type: DataType.STRING, allowNull: true })
-  title!: string;
+@Entity('post')
+export class PostEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string
 
-  @Column({ type: DataType.STRING, allowNull: false })
-  text!: string;
+  @Column('text')
+  title!: string
 
-  @Default(null)
-  @Column({ type: DataType.STRING, allowNull: true })
-  img_url!: string;
+  @Column('text')
+  text!: string
 
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  isAnonymPost!: boolean;
+  @Column({ type: 'text', default: null })
+  image_uri!: string;
+  
+  @Column({ type: 'boolean', default: false })
+  isAnonym!: boolean;
 
-  @Default(0)
-  @Column(DataType.INTEGER)
-  likes!: number;
-
-  @ForeignKey(() => User)
-  user_fk!: string;
-
-  @BelongsTo(() => User, 'user_id')
-  user!: User
+  @ManyToOne(type => UserEntity, author => author.posts)
+  author!: UserEntity;
 }

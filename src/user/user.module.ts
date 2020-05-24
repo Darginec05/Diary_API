@@ -1,19 +1,14 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { DatabaseModule } from 'src/database/database.module';
-import { User } from './user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './user.entity';
+import { PostEntity } from 'src/post/post.entity';
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [
-    UserService,
-    {
-      provide: 'USER_REPOSITORY',
-      useValue: User,
-    },
-  ],
+  imports: [TypeOrmModule.forFeature([UserEntity, PostEntity])],
   controllers: [UserController],
   exports: [UserService],
+  providers: [UserService]
 })
 export class UserModule {}
