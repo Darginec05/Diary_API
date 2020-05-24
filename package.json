@@ -29,6 +29,8 @@
     "@nestjs/typeorm": "^7.0.0",
     "bcrypt": "^4.0.1",
     "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.12.2",
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "passport": "^0.4.1",

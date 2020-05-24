@@ -9,6 +9,8 @@ import { IAuthResponse } from './auth.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
+import { LoginUserDTO } from 'src/user/dto/login.dto';
+import { CreateUserDTO } from 'src/user/dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +20,7 @@ export class AuthService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async signup(body: any): Promise<any> {
+  async signup(body: CreateUserDTO): Promise<IAuthResponse> {
     try {
       const { username } = body;
       const user = await this.userRepository.findOne({ where: { username } });
@@ -28,15 +30,15 @@ export class AuthService {
 
       const userInstance = this.userRepository.create(body);
       const results = await this.userRepository.save(userInstance);
-      const payload = { username };
+      const payload = { username, id: results.id };
       const token = this.jwtService.sign(payload);
-      return { token, results };
+      return { token, username };
     } catch (error) {
       return error;
     }
   }
 
-  async signin(body: any): Promise<IAuthResponse> {
+  async signin(body: LoginUserDTO): Promise<IAuthResponse> {
     try {
       const user = await this.userRepository.findOne({
         where: { username: body.username },

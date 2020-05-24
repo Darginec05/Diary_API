@@ -18,7 +18,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       password: process.env.DB_PASSWORD,
       port: +!process.env.DB_PORT || 5432,
       synchronize: true,
-      logging: true,
+      logging: false,
       extra: {
         ssl: true,
         rejectUnauthorized: false,
