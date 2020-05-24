@@ -12,16 +12,16 @@ export class PostEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column('text')
+  @Column({ type: 'text', nullable: true })
   title!: string
 
-  @Column('text')
+  @Column({ type: 'text', nullable: false })
   text!: string
 
-  @Column({ type: 'text', default: null })
+  @Column({ type: 'text', default: null, nullable: true })
   image_uri!: string;
   
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: false, nullable: true })
   isAnonym!: boolean;
 
   @ManyToOne(type => UserEntity, author => author.posts)

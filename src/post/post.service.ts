@@ -19,41 +19,39 @@ export class PostService {
   async addPost(body: any): Promise<any> {
     try {
       const { userId, post } = body;
-      // const newPost = await this.postRepository.create({});
-      // const newPost: IPost = new this.PostModel({ ...post, postedBy: userId });
-      // const result = await newPost.save();
-      // return result;
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      const postInstance = this.postRepository.create({ ...post, author: user });
+      await this.postRepository.save(postInstance);
+      return post;
     } catch (error) {
       return error;
     }
   }
 
   async getPosts(req: any, limit: number): Promise<any[]> {
-    // const posts = this.postRepository.findAll<Post>();
-    return [];
+    try {
+      const MAX_LIMIT_POSTS_UNAUTH = 15;
+      if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
+        throw new UnauthorizedException();
+      };
 
-    // try {
-    //   const MAX_LIMIT_POSTS_UNAUTH = 15;
-
-    //   if(!req.user && limit > MAX_LIMIT_POSTS_UNAUTH) {
-    //     throw new UnauthorizedException();
-    //   }
-
-    //   const posts: IPost[] = await this.PostModel.find().limit(limit).exec();
-    //   return posts;
-    // } catch (error) {
-    //   return error;
-    // }
+      const posts = this.postRepository.find({
+        relations: ['author'],
+        take: 25,
+      });
+      return posts;
+    } catch (error) {
+      return error;      
+    }
   }
 
   async getPostByID(post_id: string): Promise<any> {
     try {
-      //[TODO] - add validation for uuid
-      // const post = await this.postRepository.findOne({ where: { post_id } });
-      // if (!post) {
-      //   throw new HttpException('POST_NOT_FOUND', 404);
-      // }
-      // return post;
+      const post = await this.postRepository.findOne({ where: { id: post_id } });
+      if (!post) {
+        throw new HttpException('POST_NOT_FOUND', 404);
+      }
+      return post;
     } catch (error) {
       return error;
     }

@@ -6,14 +6,14 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
-  async signUp(@Body() userData: any) {
-    const payload = await this.authService.signUp(userData);
+  async signUp(@Body() body: any) {
+    const payload = await this.authService.signup(body);
     return payload;
   }
 
   @Post('signin')
   async signIn(@Body() userData: any) {
-    const payload = await this.authService.signIn(userData);
+    const payload = await this.authService.signin(userData);
     return payload;
   }
 }

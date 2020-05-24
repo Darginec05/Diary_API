@@ -1,52 +1,58 @@
 import {
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
-  ConflictException,
   HttpException,
   HttpStatus,
-  Inject,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { IAuthResponse } from 'src/user/user.interface';
-import { v4 as uuidv4 } from 'uuid';
+import { IAuthResponse } from './auth.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async signUp(userData: any): Promise<any> {
+  async signup(body: any): Promise<any> {
     try {
-      // const user = await this.userRepository.findOne({ where: { username: userData.username } });
-      // console.log(user);
-      // if (user) {
-      //   throw new HttpException('USER IS ALREADY EXISTS', HttpStatus.CONFLICT);
-      // }
-      // const someData = await this.userRepository.create({ ...userData, user_id: uuidv4() });
-      // const payload = { username: userData.username, id: userData.id };
-      // const token = this.jwtService.sign(payload);
-      // return { token, username: userData.username };
+      const { username } = body;
+      const user = await this.userRepository.findOne({ where: { username } });
+      if (user) {
+        throw new HttpException('USER ALREADY EXISTS', HttpStatus.BAD_REQUEST);
+      }
+
+      const userInstance = this.userRepository.create(body);
+      const results = await this.userRepository.save(userInstance);
+      const payload = { username };
+      const token = this.jwtService.sign(payload);
+      return { token, results };
     } catch (error) {
       return error;
     }
   }
 
-  async signIn(userData: any): Promise<IAuthResponse> {
+  async signin(body: any): Promise<IAuthResponse> {
     try {
-      // const user = await this.userRepository.findOne({ where: { username: userData.username } });
-      // if (!user) {
-      //   throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
-      // }
-      // const isValidPass = true; //[TODO] - add compare of password
-      // if (!isValidPass) {
-      //   throw new UnauthorizedException('Invalid password');
-      // }
+      const user = await this.userRepository.findOne({
+        where: { username: body.username },
+      });
+      if (!user) {
+        throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+      }
 
-      // const payload = { username: userData.username, id: userData.id };
-      // const token = this.jwtService.sign(payload);
-      return { token: '', username: '' };
+      const isValidPassword = await user.comparePassword(body.password);
+      if (!isValidPassword) {
+        throw new UnauthorizedException('INVALID PASSWORD');
+      }
+
+      const payload = { username: user.username, id: user.id };
+      const token = this.jwtService.sign(payload);
+      return { token, username: user.username };
     } catch (error) {
       return error;
     }
