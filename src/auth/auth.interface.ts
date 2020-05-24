@@ -9,7 +9,7 @@ export interface AuthUser {
 }
 
 export interface AuthUserRequest extends Request {
-  user?: AuthUser | boolean | undefined
+  user?: AuthUser
 };
 
 export interface TokenPayload extends AuthUser {

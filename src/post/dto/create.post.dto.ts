@@ -1,7 +1,6 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUUID, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
-class PostDTO {
+export class CreatePostDTO {
   @IsString()
   @IsOptional()
   title?: string;
@@ -17,13 +16,4 @@ class PostDTO {
   @IsBoolean()
   @IsOptional()
   isAnonym?: boolean;
-};
-
-export class CreatePostDTO {
-  @ValidateNested()
-  @Type(() => PostDTO)
-  post!: PostDTO;
-
-  @IsUUID()
-  user_id!: string;
 }

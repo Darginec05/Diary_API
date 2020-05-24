@@ -19,18 +19,17 @@ export class PostService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async addPost(body: CreatePostDTO): Promise<PostResponse> {
+  async addPost(user_id: string | undefined, body: CreatePostDTO): Promise<Pick<PostResponse, 'id'>> {
     try {
-      const { user_id, post } = body;
       const user = await this.userRepository.findOne({
         where: { id: user_id },
       });
       const postInstance = this.postRepository.create({
-        ...post,
+        ...body,
         author: user,
       });
-      const created = await this.postRepository.save(postInstance);
-      return created;
+      const { id } = await this.postRepository.save(postInstance);
+      return { id };
     } catch (error) {
       return error;
     }
