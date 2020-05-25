@@ -44,7 +44,7 @@ export class PostService {
 
       const posts = await this.postRepository.find({
         relations: ['author'],
-        take: 25,
+        take: limit,
       });
 
       const response = posts.map(post => ({

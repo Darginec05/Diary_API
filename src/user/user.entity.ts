@@ -3,12 +3,15 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  BeforeInsert
+  BeforeInsert,
+  OneToOne,
+  JoinColumn
 } from 'typeorm'
 
 import { PostEntity } from '../post/post.entity';
 
 import * as bcrypt from 'bcryptjs'
+import { ProfileEntity } from 'src/profile/profile.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -26,6 +29,10 @@ export class UserEntity {
 
   @OneToMany(type => PostEntity, post => post.author, { cascade: true })
   posts!: PostEntity[]
+
+  @OneToOne(type => ProfileEntity, profile => profile.user)
+  @JoinColumn()
+  profile!: ProfileEntity
 
   @BeforeInsert()
   async hashPassword() {

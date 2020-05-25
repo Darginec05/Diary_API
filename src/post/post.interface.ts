@@ -4,6 +4,8 @@ export interface Post {
   text: string;
   image_uri?: string | null;
   isAnonym?: boolean;
+  created_at: Date;
+  updated_at: Date;
 };
 
 export interface PostAuthor {

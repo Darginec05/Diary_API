@@ -2,7 +2,9 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn
 } from 'typeorm'
 
 import { UserEntity } from '../user/user.entity';
@@ -23,6 +25,12 @@ export class PostEntity {
   
   @Column({ type: 'boolean', default: false, nullable: true })
   isAnonym?: boolean;
+
+  @CreateDateColumn()
+  created_at!: Date;
+  
+  @UpdateDateColumn()
+  updated_at!: Date;
 
   @ManyToOne(type => UserEntity, author => author.posts)
   author!: UserEntity;

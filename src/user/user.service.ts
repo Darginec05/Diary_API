@@ -2,21 +2,31 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { Post } from 'src/post/post.interface';
+import { UserDataResponse } from './user.interface';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-  async getMyPosts(username: string | undefined): Promise<Post[]> {
+  async getUserData(_username: string | undefined): Promise<UserDataResponse> {
     try {
-      const user = await this.userRepository.findOne({ where: { username }, relations: ['posts'] });
-      if(!user) {
+      const user = await this.userRepository.findOne({
+        where: { username: _username },
+        relations: ['posts', 'profile'],
+      });
+      if (!user) {
         throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
-      return user.posts;
+      const { profile, posts, username } = user;
+      return {
+        posts,
+        profile: { username, bio: profile?.bio, avatar: profile?.avatar },
+      };
     } catch (error) {
-      return error;      
+      return error;
     }
   }
 }

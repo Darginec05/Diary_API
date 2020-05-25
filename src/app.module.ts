@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProfileModule } from './profile/profile.module';
 
 //Temporary: https://stackoverflow.com/questions/45088006/nodejs-error-self-signed-certificate-in-certificate-chain/45088585
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -17,9 +18,14 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       port: +!process.env.DB_PORT || 5432,
-      synchronize: true,
+      synchronize: false,
       logging: true,
       dropSchema: false,
+      migrationsTableName: 'migration_table',
+      migrations: ["migration/*.js"],
+      cli: {
+        migrationsDir: "migration"
+      },
       extra: {
         ssl: true,
         rejectUnauthorized: false,
@@ -30,6 +36,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     UserModule,
     PostModule,
     AuthModule,
+    ProfileModule,
   ],
 })
 export class AppModule {}
