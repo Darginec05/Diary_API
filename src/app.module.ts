@@ -19,7 +19,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
       password: process.env.DB_PASSWORD,
       port: +!process.env.DB_PORT || 5432,
       synchronize: false,
-      logging: true,
+      logging: false,
       dropSchema: false,
       migrationsTableName: 'migration_table',
       migrations: ["migration/*.js"],

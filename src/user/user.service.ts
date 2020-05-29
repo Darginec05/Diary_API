@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { UserDataResponse } from './user.interface';
+import { AuthUser } from 'src/auth/auth.interface';
+import { Post } from 'src/post/post.interface';
 
 @Injectable()
 export class UserService {
@@ -11,19 +13,30 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async getUserData(_username: string | undefined): Promise<UserDataResponse> {
+  async getUserData(
+    authUser: AuthUser | undefined,
+    username: string,
+  ): Promise<UserDataResponse> {
+    const isOwner = authUser?.username === username;
+    console.log({ isOwner })
     try {
       const user = await this.userRepository.findOne({
-        where: { username: _username },
+        where: { username },
         relations: ['posts', 'profile'],
       });
       if (!user) {
         throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
-      const { profile, posts, username } = user;
+
+      const { profile, posts } = user;
+
       return {
-        posts,
-        profile: { username, bio: profile?.bio, avatar: profile?.avatar },
+        profile: {
+          username: user.username,
+          bio: profile?.bio,
+          avatar: profile?.avatar,
+        },
+        posts: isOwner ? posts : posts.filter(post => !post.isAnonym),
       };
     } catch (error) {
       return error;

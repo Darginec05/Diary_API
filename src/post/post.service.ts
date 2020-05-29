@@ -9,6 +9,7 @@ import { PostEntity } from './post.entity';
 import { UserEntity } from '../user/user.entity';
 import { CreatePostDTO } from './dto/create.post.dto';
 import { PostResponse, Post } from './post.interface';
+import { AuthUser } from 'src/auth/auth.interface';
 
 @Injectable()
 export class PostService {
@@ -35,23 +36,25 @@ export class PostService {
     }
   }
 
-  async getPosts(user: any, limit: number): Promise<PostResponse[]> {
+  async getPosts(user: AuthUser | undefined, query: any): Promise<PostResponse[]> {
     try {
       const MAX_LIMIT_POSTS_UNAUTH = 15;
-      if (!user && limit > MAX_LIMIT_POSTS_UNAUTH) {
+      if (!user && query.limit > MAX_LIMIT_POSTS_UNAUTH) {
         throw new UnauthorizedException();
       }
 
       const posts = await this.postRepository.find({
         relations: ['author'],
-        take: limit,
+        take: query.limit,
+        order: { created_at: 'DESC' },
+        where: { isAnonym: false }
       });
 
-      const response = posts.map(post => ({
+      const userPosts = posts.map(post => ({
         ...post,
         author: { id: post.author.id, username: post.author.username },
-      }));
-      return response;
+      }))
+      return userPosts;
     } catch (error) {
       return error;
     }

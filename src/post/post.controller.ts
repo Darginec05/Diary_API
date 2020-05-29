@@ -22,8 +22,8 @@ export class PostController {
 
   @Get('list')
   @UseGuards(new OptionalAuthGuard())
-  async getPosts(@Req() req: AuthUserRequest, @Query('limit') limit = 15): Promise<PostResponse[]> {
-    const posts = await this.postService.getPosts(req.user, +limit);
+  async getPosts(@Req() req: AuthUserRequest, @Query() query: any): Promise<PostResponse[]> {
+    const posts = await this.postService.getPosts(req.user, query);
     return posts;
   }
 
