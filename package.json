@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV='production' nest build",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "cross-env NODE_ENV='production' nest start",
+    "start": "cross-env NODE_ENV='production' node dist/main",
     "dev": "cross-env NODE_ENV='development' nodemon",
     "start:debug": "nest start --debug --watch",
     "prod": "yarn build && node dist/main",
