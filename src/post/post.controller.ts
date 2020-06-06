@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseGuards, Req, Query, UsePipes } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req, Query, UsePipes, Delete } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuard } from '@nestjs/passport';
 import { OptionalAuthGuard } from '../guards/optional.auth.guard';
@@ -33,5 +33,12 @@ export class PostController {
   async getPostByID(@Param() params: GetPostDTO): Promise<IPost> {
     const post = await this.postService.getPostByID(params.post_id);
     return post;
+  }
+
+  @Delete(':postId')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard('jwt'))
+  async deletePost(@Param() params: GetPostDTO): Promise<void> {
+    await this.postService.deletePost(params.post_id);
   }
 }
