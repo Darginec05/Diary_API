@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { OptionalAuthGuard } from '../guards/optional.auth.guard';
 import { CreatePostDTO } from './dto/create.post.dto';
 import { PostResponse, Post as IPost } from './post.interface';
-import { GetPostDTO } from './dto/get.post.dto';
+// import { GetPostDTO } from './dto/get.post.dto';
 import { AuthUserRequest } from '../auth/auth.interface';
 import { ValidationPipe } from 'src/pipes/ValidationPipe';
 
@@ -30,15 +30,15 @@ export class PostController {
   @Get(':postId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard('jwt'))
-  async getPostByID(@Param() params: GetPostDTO): Promise<IPost> {
-    const post = await this.postService.getPostByID(params.post_id);
+  async getPostByID(@Param() params: any): Promise<IPost> {
+    const post = await this.postService.getPostByID(params.postId);
     return post;
   }
 
   @Delete(':postId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard('jwt'))
-  async deletePost(@Param() params: GetPostDTO): Promise<void> {
-    await this.postService.deletePost(params.post_id);
+  async deletePost(@Param() params: any): Promise<void> {
+    await this.postService.deletePost(params.postId);
   }
 }
